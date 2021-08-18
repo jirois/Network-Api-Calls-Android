@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ApiCallLoginAsyncTask()
+        ApiCallLoginAsyncTask().execute()
     }
 
     private inner class ApiCallLoginAsyncTask():
@@ -100,10 +100,49 @@ class MainActivity : AppCompatActivity() {
 
             Log.i("JSON Response Result", result)
 
+            /**
+             * Create a new with name/value mappings from the JSON
+             */
             val jsonObject = JSONObject(result)
 
+
+            // Returns the value mapped by {name} it it exists
             val message = jsonObject.optString("message")
             Log.i("Message", message)
+
+            // Returns the value mapped by {name} it it exists
+            val userId = jsonObject.optInt("user_id")
+            Log.i("Message", "$userId")
+
+            // Returns the value mapped by {name} it it exists
+            val mobileNumber = jsonObject.optLong("mobile")
+            Log.i("Message", "$mobileNumber")
+
+            // Returns the value mapped by {name} if it exists.
+            val profileDetailsObject = jsonObject.optJSONObject("profile_details")
+
+            val isProfileCompleted = profileDetailsObject.optBoolean("is_profile_completed")
+            Log.i("Is Profile Completed", "$isProfileCompleted")
+
+            val rating = profileDetailsObject.optDouble("rating")
+            Log.i("Rating", "$rating")
+
+            // Returns the value mapped by {name} if it exists.
+            val dataListArray = jsonObject.optJSONArray("data_list")
+            Log.i("Data List Size", "${dataListArray.length()}")
+
+            for (item in 0 until dataListArray.length()) {
+                Log.i("Value $item", "${dataListArray[item]}")
+
+                // Returns the value mapped by {name} if it exists.
+                val dataItemObject: JSONObject = dataListArray[item] as JSONObject
+
+                val id = dataItemObject.optString("id")
+                Log.i("ID", "$id")
+
+                val value = dataItemObject.optString("value")
+                Log.i("Value", "$value")
+            }
 
         }
 

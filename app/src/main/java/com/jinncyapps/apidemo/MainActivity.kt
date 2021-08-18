@@ -6,10 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
+import java.io.*
 import java.lang.StringBuilder
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
@@ -19,10 +16,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ApiCallLoginAsyncTask().execute()
+        ApiCallLoginAsyncTask("Omas", "123345").execute()
     }
 
-    private inner class ApiCallLoginAsyncTask():
+    private inner class ApiCallLoginAsyncTask(val username: String, val password: String):
         AsyncTask<Any, Void, String>(){
         // A variable for custom Progress Dialog
         private lateinit var customProgressDialog: Dialog
@@ -47,6 +44,46 @@ class MainActivity : AppCompatActivity() {
                  */
                 connection.doOutput = true
                 connection.doInput = true
+
+                /**
+                 * Sets whether HTTP redirects should be automatically followed by this instance.
+                 * The default value comes from followRedirects, which defaults to true.
+                 */
+
+                connection.instanceFollowRedirects = false
+
+                connection.requestMethod = "POST"
+
+                /**
+                 * Sets the general request property. If a property with the key already
+                 * exists, overwrite its value with the new value.
+                 */
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.setRequestProperty("charset", "utf-8")
+                connection.setRequestProperty("Accept", "application/json")
+
+                connection.useCaches = false
+
+                /**
+                 * Creates a new data output stream to write data to the specified
+                 * underlying output stream. The counter written is set to zero.
+                 */
+                val wr = DataOutputStream(connection.outputStream)
+                // Create JSONObject Request
+                val jsonRequest = JSONObject()
+                jsonRequest.put("username", username)
+                jsonRequest.put("password", password)
+
+                /**
+                 * Writes out the string to the underlying output stream as a
+                 * sequence of bytes. Each character in the string is written out
+                 */
+                wr.writeBytes(jsonRequest.toString())
+                wr.flush() // Flushes this data output stream
+                wr.close() // Closes this output stream and release resources associated with it
+
+
+
 
                 val httpResult: Int = connection.responseCode //Get a response code OK
 

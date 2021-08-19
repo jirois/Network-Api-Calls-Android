@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.google.gson.Gson
 import org.json.JSONObject
 import java.io.*
 import java.lang.StringBuilder
@@ -137,26 +138,52 @@ class MainActivity : AppCompatActivity() {
 
             Log.i("JSON Response Result", result)
 
+            // Map the json response with the Data class using GSON
+            val responseData = Gson().fromJson(result, ResponseData::class.java)
+            Log.i("Message", responseData.message)
+            Log.i("User Id", "responseData.user_id")
+            Log.i("Name", responseData.name)
+            Log.i("Email", responseData.email)
+            Log.i("Mobile", "${responseData.mobile}")
+
+            // Profile Details
+            Log.i("Is Profile Completed", "${responseData.profile_details.is_profile_completed}")
+            Log.i("Rating", "${responseData.profile_details.rating}")
+
+            // Data List Details
+            Log.i("Data List Size", "${responseData.data_list.size}")
+
+            for (item in responseData.data_list.indices) {
+                Log.i("Value $item", "${responseData.data_list[item]}")
+
+                Log.i("ID", "${responseData.data_list[item].id}")
+                Log.i("Value", "${responseData.data_list[item].value}")
+            }
+
+
+
+
+
             /**
              * Create a new with name/value mappings from the JSON
              */
-            val jsonObject = JSONObject(result)
+           // val jsonObject = JSONObject(result)
 
 
             // Returns the value mapped by {name} it it exists
-            val message = jsonObject.optString("message")
-            Log.i("Message", message)
+            //val message = jsonObject.optString("message")
+            //Log.i("Message", message)
 
             // Returns the value mapped by {name} it it exists
-            val userId = jsonObject.optInt("user_id")
-            Log.i("Message", "$userId")
+            //val userId = jsonObject.optInt("user_id")
+            //Log.i("Message", "$userId")
 
             // Returns the value mapped by {name} it it exists
-            val mobileNumber = jsonObject.optLong("mobile")
-            Log.i("Message", "$mobileNumber")
+            //val mobileNumber = jsonObject.optLong("mobile")
+            //Log.i("Message", "$mobileNumber")
 
             // Returns the value mapped by {name} if it exists.
-            val profileDetailsObject = jsonObject.optJSONObject("profile_details")
+           /* val profileDetailsObject = jsonObject.optJSONObject("profile_details")
 
             val isProfileCompleted = profileDetailsObject.optBoolean("is_profile_completed")
             Log.i("Is Profile Completed", "$isProfileCompleted")
@@ -179,7 +206,7 @@ class MainActivity : AppCompatActivity() {
 
                 val value = dataItemObject.optString("value")
                 Log.i("Value", "$value")
-            }
+            } */
 
         }
 
